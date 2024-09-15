@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @MappedSuperclass
+@EntityListeners(BaseEntityListener.class)
 public class BaseEntity {
 
     @Id
@@ -30,19 +31,5 @@ public class BaseEntity {
 
     private Boolean isDeleted = false;
 
-    @PrePersist
-    public void onPrePersist() {
-        this.insertDateTime = LocalDateTime.now();
-        this.lastUpdateDateTime = LocalDateTime.now();
-        // below ones will be updated after security implementation
-        this.lastUpdateUserId = 1L;
-        this.insertUserId = 1L;
-    }
-
-    @PreUpdate
-    public void onPreUpdate() {
-        this.lastUpdateDateTime = LocalDateTime.now();
-        this.lastUpdateUserId = 1L;
-    }
 
 }

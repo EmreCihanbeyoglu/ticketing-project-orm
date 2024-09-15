@@ -5,6 +5,7 @@ import com.cydeo.enums.Status;
 import com.cydeo.service.ProjectService;
 import com.cydeo.service.TaskService;
 import com.cydeo.service.UserService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -92,15 +93,20 @@ public class TaskController {
 
     @GetMapping("/employee/pending-tasks")
     public String employeePendingTasks(Model model) {
-        model.addAttribute("tasks", taskService.findAllTaskByStatusIsNotAndAssignedEmployee(Status.COMPLETE, "wudanesyha"));
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        model.addAttribute("tasks", taskService.findAllTaskByStatusIsNotAndAssignedEmployee(Status.COMPLETE, username));
         return "task/pending-tasks";
     }
 
     @GetMapping("/employee/edit/{id}")
     public String employeeEditTask(@PathVariable("id") Long id, Model model) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
         Optional<TaskDTO> task = taskService.findTaskById(id);
         task.ifPresent(taskDTO -> model.addAttribute("task", taskDTO));
-        model.addAttribute("tasks", taskService.findAllTaskByStatusIsNotAndAssignedEmployee(Status.COMPLETE, "wudanesyha"));
+        model.addAttribute("tasks", taskService.findAllTaskByStatusIsNotAndAssignedEmployee(Status.COMPLETE, username));
         model.addAttribute("statuses", Status.values());
 
         return "task/status-update";
@@ -110,9 +116,11 @@ public class TaskController {
     @PostMapping("/employee/update/{id}")
     public String employeeUpdateTask(@ModelAttribute("task") TaskDTO task, BindingResult bindingResult, Model model) {
 
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
         if (bindingResult.hasErrors()) {
 
-            model.addAttribute("tasks", taskService.findAllTaskByStatusIsNotAndAssignedEmployee(Status.COMPLETE, "wudanesyha"));
+            model.addAttribute("tasks", taskService.findAllTaskByStatusIsNotAndAssignedEmployee(Status.COMPLETE, username));
             model.addAttribute("statuses", Status.values());
 
             return "/task/status-update";
@@ -126,7 +134,8 @@ public class TaskController {
 
     @GetMapping("/employee/archive")
     public String employeeArchivedTasks(Model model) {
-        model.addAttribute("tasks", taskService.findAllTasksByStatusAndEmployee(Status.COMPLETE, "wudanesyha"));
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        model.addAttribute("tasks", taskService.findAllTasksByStatusAndEmployee(Status.COMPLETE, username));
         return "task/archive";
     }
 

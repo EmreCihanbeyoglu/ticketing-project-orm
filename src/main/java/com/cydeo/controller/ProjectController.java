@@ -1,10 +1,9 @@
 package com.cydeo.controller;
 
 import com.cydeo.dto.ProjectDTO;
-import com.cydeo.dto.UserDTO;
-import com.cydeo.repository.UserRepository;
 import com.cydeo.service.ProjectService;
 import com.cydeo.service.UserService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,12 +18,10 @@ public class ProjectController {
 
     private final ProjectService projectService;
     private final UserService userService;
-    private final UserRepository userRepository;
 
-    public ProjectController(ProjectService projectService, UserService userService, UserRepository userRepository) {
+    public ProjectController(ProjectService projectService, UserService userService) {
         this.projectService = projectService;
         this.userService = userService;
-        this.userRepository = userRepository;
     }
 
     @GetMapping("/create")
@@ -96,7 +93,10 @@ public class ProjectController {
 
     @GetMapping("/manager/project-status")
     public String getProjectByManager(Model model) {
-        List<ProjectDTO> projects = projectService.findAllProjectsByAssignedManager("vafogez");
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        List<ProjectDTO> projects = projectService.findAllProjectsByAssignedManager(username);
         model.addAttribute("projects", projects);
         return "/manager/project-status";
     }
