@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.cydeo</groupId>
-	<artifactId>ticketing-project-orm</artifactId>
+	<artifactId>spring-20-mocking</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>ticketing-project-orm</name>
 	<description>ticketing-project-orm</description>
