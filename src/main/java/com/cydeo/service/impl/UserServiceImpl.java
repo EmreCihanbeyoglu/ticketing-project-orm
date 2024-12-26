@@ -91,12 +91,12 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private boolean isSafeToDeleteUser(String username) {
-       User user =  userRepository.findByUserName(username);
-       if(user.getRole().getDescription().equals("Manager")) {
-           List<ProjectDTO> projectList =  projectService.findAllProjectsByAssignedManager(user.getUserName());
-           return projectList.stream().allMatch(project -> project.getProjectStatus().equals(Status.COMPLETE));
-       }
+    public boolean isSafeToDeleteUser(String username) {
+        User user = userRepository.findByUserName(username);
+        if (user.getRole().getDescription().equals("Manager")) {
+            List<ProjectDTO> projectList = projectService.findAllProjectsByAssignedManager(user.getUserName());
+            return projectList.stream().allMatch(project -> project.getProjectStatus().equals(Status.COMPLETE));
+        }
        if(user.getRole().getDescription().equals("Employee")) {
            List<TaskDTO> taskList = taskService.findAllTaskByStatusIsNotAndAssignedEmployee(Status.COMPLETE, user.getUserName());
            return taskList.isEmpty();
